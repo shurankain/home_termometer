@@ -1,9 +1,20 @@
 #include <Arduino.h>
 
-void setup() {
-  // put your setup code here, to run once:
+const int motionPin = 8;
+
+void setup()
+{
+  pinMode(motionPin, INPUT);
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
+void loop()
+{
+  if (digitalRead(motionPin) == HIGH)
+  {
+    // show data
+  }
+  else
+  {
+    // goto sleep
+  }
 }
