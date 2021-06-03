@@ -2,29 +2,83 @@
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
-#include <DHT.h>;
+#include <LiquidCrystal_I2C.h>
 
-const int motionPin = 8;
-Adafruit_BME280 bme;
-
-//Constants
-#define dhtPIN 2          // what pin we're connected to
-#define DHTTYPE DHT22     // DHT 22  (AM2302)
-DHT dht(dhtPIN, DHTTYPE); //// Initialize DHT sensor for normal 16mhz Arduino
+Adafruit_BME280 internalBME;
+Adafruit_BME280 externalBME;
+LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27, 16, 2);
+const int motionPin = 8; // Motion sensor pin
 
 void setup()
 {
   Serial.begin(9600);
+  Serial.println("was here");
   pinMode(motionPin, INPUT);
 
-  bool status = bme.begin();
-  if (!status)
-  {
-    Serial.println("Could not find a valid BME280 sensor, check wiring!");
-    while (1);
-  }
+  Serial.println("was here 2");
 
-  dht.begin();
+  // boolean firstInit = internalBME.begin(0x77);
+  boolean secondInit = externalBME.begin(0x76);
+  // Serial.println(firstInit);
+  Serial.println("was here 3");
+  Serial.println(secondInit);
+  lcd.init();
+}
+
+// // internalBME data
+// void printInternalTempData()
+// {
+//   // temperature
+//   float temp_val = internalBME.readTemperature();
+//   char outstr[3];
+
+//   dtostrf(temp_val, 3, 1, outstr);
+//   lcd.print(outstr);
+//   lcd.print((char)223);
+//   lcd.print(" ");
+
+  
+//   //humidity
+//   lcd.setCursor(7, 0);
+//   temp_val = internalBME.readHumidity();
+//   dtostrf(temp_val, 2, 0, outstr);
+
+//   lcd.print(outstr);
+//   lcd.print("% ");
+
+//   // pressure
+//   temp_val = internalBME.readPressure() * 0.0075F;
+//   dtostrf(temp_val, 3, 0, outstr);
+//   lcd.print(outstr);
+//   lcd.print("mm");
+// }
+
+// externalBME data
+void printExternalTempData()
+{ 
+  // temperature
+  float temp_val = externalBME.readTemperature();
+  char outstr[3];
+
+  dtostrf(temp_val, 3, 1, outstr);
+  lcd.print(outstr);
+  lcd.print((char)223);
+  lcd.print(" ");
+
+  
+  //humidity
+  lcd.setCursor(7, 1);
+  temp_val = externalBME.readHumidity();
+  dtostrf(temp_val, 2, 0, outstr);
+
+  lcd.print(outstr);
+  lcd.print("% ");
+
+  // pressure
+  temp_val = externalBME.readPressure() * 0.0075F;
+  dtostrf(temp_val, 3, 0, outstr);
+  lcd.print(outstr);
+  lcd.print("mm");
 }
 
 void loop()
@@ -32,39 +86,19 @@ void loop()
   if (digitalRead(motionPin) == HIGH)
   {
     // show data
-    printHomeTempData();
+    lcd.on();
+    lcd.backlight();
+    lcd.clear();
+    lcd.setCursor(0, 0); // column, row
+    // printInternalTempData();
+    lcd.setCursor(0, 1);  
+    printExternalTempData();
+    delay(5000);    
   }
   else
   {
     // goto sleep
+    lcd.off();
+    lcd.noBacklight();
   }
-}
-
-// BME 280 data
-void printHomeTempData()
-{
-  Serial.print("Temperature = ");
-  Serial.print(bme.readTemperature());
-  Serial.println(" *C");
-
-  Serial.print("Pressure = ");
-  Serial.print(bme.readPressure() / 100.0F);
-  Serial.println(" hPa");
-
-  Serial.print("Humidity = ");
-  Serial.print(bme.readHumidity());
-  Serial.println(" %");
-
-  Serial.println();
-  delay(1000);
-}
-
-// DHT22 data
-void printHomeTempData()
-{
-  Serial.print("Humidity: ");
-  Serial.print(dht.readHumidity());
-  Serial.print(" %, Temp: ");
-  Serial.print(dht.readTemperature());
-  Serial.println(" Celsius");
 }
