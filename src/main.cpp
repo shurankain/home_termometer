@@ -12,46 +12,40 @@ const int motionPin = 8; // Motion sensor pin
 void setup()
 {
   Serial.begin(9600);
-  Serial.println("was here");
-  pinMode(motionPin, INPUT);
+  pinMode(motionPin, INPUT_PULLUP);
 
-  Serial.println("was here 2");
-
-  // boolean firstInit = internalBME.begin(0x77);
+  boolean firstInit = internalBME.begin(0x77);
   boolean secondInit = externalBME.begin(0x76);
-  // Serial.println(firstInit);
-  Serial.println("was here 3");
-  Serial.println(secondInit);
   lcd.init();
 }
 
-// // internalBME data
-// void printInternalTempData()
-// {
-//   // temperature
-//   float temp_val = internalBME.readTemperature();
-//   char outstr[3];
+// internalBME data
+void printInternalTempData()
+{
+  // temperature
+  float temp_val = internalBME.readTemperature();
+  char outstr[3];
 
-//   dtostrf(temp_val, 3, 1, outstr);
-//   lcd.print(outstr);
-//   lcd.print((char)223);
-//   lcd.print(" ");
+  dtostrf(temp_val, 3, 1, outstr);
+  lcd.print(outstr);
+  lcd.print((char)223);
+  lcd.print(" ");
 
   
-//   //humidity
-//   lcd.setCursor(7, 0);
-//   temp_val = internalBME.readHumidity();
-//   dtostrf(temp_val, 2, 0, outstr);
+  //humidity
+  lcd.setCursor(7, 0);
+  temp_val = internalBME.readHumidity();
+  dtostrf(temp_val, 2, 0, outstr);
 
-//   lcd.print(outstr);
-//   lcd.print("% ");
+  lcd.print(outstr);
+  lcd.print("% ");
 
-//   // pressure
-//   temp_val = internalBME.readPressure() * 0.0075F;
-//   dtostrf(temp_val, 3, 0, outstr);
-//   lcd.print(outstr);
-//   lcd.print("mm");
-// }
+  // pressure
+  temp_val = internalBME.readPressure() * 0.0075F;
+  dtostrf(temp_val, 3, 0, outstr);
+  lcd.print(outstr);
+  lcd.print("mm");
+}
 
 // externalBME data
 void printExternalTempData()
@@ -90,7 +84,7 @@ void loop()
     lcd.backlight();
     lcd.clear();
     lcd.setCursor(0, 0); // column, row
-    // printInternalTempData();
+    printInternalTempData();
     lcd.setCursor(0, 1);  
     printExternalTempData();
     delay(5000);    
