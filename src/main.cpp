@@ -15,7 +15,6 @@ void setup()
   pinMode(motionPin, INPUT_PULLUP);
 
   internalBME.begin(0x77);
-  externalBME.begin(0x76);
   lcd.init();
 }
 
@@ -29,7 +28,7 @@ void printInternalTempData()
   dtostrf(temp_val, 3, 1, outstr);
   lcd.print(outstr);
   lcd.print((char)223);
-  
+
   //humidity
   lcd.setCursor(7, 0);
   temp_val = internalBME.readHumidity();
@@ -46,7 +45,7 @@ void printInternalTempData()
 
 // externalBME data
 void printExternalTempData()
-{ 
+{
   // temperature
   float temp_val = externalBME.readTemperature() + 0.5; //compensate sensor float
   char outstr[3];
@@ -54,7 +53,7 @@ void printExternalTempData()
   dtostrf(temp_val, 3, 1, outstr);
   lcd.print(outstr);
   lcd.print((char)223);
-  
+
   //humidity
   lcd.setCursor(7, 1);
   temp_val = externalBME.readHumidity();
@@ -79,9 +78,14 @@ void loop()
     lcd.clear();
     lcd.setCursor(0, 0); // column, row
     printInternalTempData();
-    lcd.setCursor(0, 1);  
-    printExternalTempData();
-    delay(5000);    
+    lcd.setCursor(0, 1);
+    if (externalBME.begin(0x76))
+    {
+      printExternalTempData();
+    } else {
+      lcd.print("ext disconnected");
+    }
+    delay(5000);
   }
   else
   {
