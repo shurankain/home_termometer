@@ -23,7 +23,7 @@ void setup()
 void printInternalTempData()
 {
   // temperature
-  float temp_val = internalBME.readTemperature();
+  float temp_val = internalBME.readTemperature() - 0.5; //compensate sensor float
   char outstr[3];
 
   dtostrf(temp_val, 3, 1, outstr);
@@ -51,7 +51,7 @@ void printInternalTempData()
 void printExternalTempData()
 { 
   // temperature
-  float temp_val = externalBME.readTemperature();
+  float temp_val = externalBME.readTemperature() + 0.5; //compensate sensor float
   char outstr[3];
 
   dtostrf(temp_val, 3, 1, outstr);
