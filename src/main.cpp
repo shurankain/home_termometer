@@ -14,8 +14,8 @@ void setup()
   Serial.begin(9600);
   pinMode(motionPin, INPUT_PULLUP);
 
-  boolean firstInit = internalBME.begin(0x77);
-  boolean secondInit = externalBME.begin(0x76);
+  internalBME.begin(0x77);
+  externalBME.begin(0x76);
   lcd.init();
 }
 
@@ -29,14 +29,11 @@ void printInternalTempData()
   dtostrf(temp_val, 3, 1, outstr);
   lcd.print(outstr);
   lcd.print((char)223);
-  lcd.print(" ");
-
   
   //humidity
   lcd.setCursor(7, 0);
   temp_val = internalBME.readHumidity();
   dtostrf(temp_val, 2, 0, outstr);
-
   lcd.print(outstr);
   lcd.print("% ");
 
@@ -57,14 +54,11 @@ void printExternalTempData()
   dtostrf(temp_val, 3, 1, outstr);
   lcd.print(outstr);
   lcd.print((char)223);
-  lcd.print(" ");
-
   
   //humidity
   lcd.setCursor(7, 1);
   temp_val = externalBME.readHumidity();
   dtostrf(temp_val, 2, 0, outstr);
-
   lcd.print(outstr);
   lcd.print("% ");
 
